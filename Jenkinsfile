@@ -3,6 +3,7 @@ pipeline {
     environment {
         registry = "isalmaniac/nodejsapp"
         registryCredential = 'dockerhub'
+    }
     stages {
         
         stage('Build Docker Image') {
