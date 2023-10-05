@@ -1,37 +1,40 @@
 pipeline {
-    agent any
-    
     environment {
-        registry = "isalmaniac/nodejsapp"
-        registryCredential = 'dockerhub'
+    registry = "isalmaniac/nodejsapp"
+    registryCredential = 'dockerhub'
+    dockerImage = ''
     }
+
+    agent any
     stages {
-        
-        stage('Build Docker Image') {
-            steps {
-                // Build the Docker image
-                script {
-                    dockerImage = docker.build registry + ":$BUILD_NUMBER"
+            stage('Cloning our Git') {
+                steps {
+                git 'git@github.com:iSalmaniac/Nodejs-docker-jenkins-nginx.git'
                 }
             }
-        }
-        
-        stage('Push to Docker Hub') {
-            steps {
-                // Push the Docker image to Docker Hub
-                script {
-                  docker.withRegistry( '', registryCredential ) {
-                    docker.image.push("$BUILD_NUMBER")
-                    docker.image.push('latest')
-                  }
+
+            stage('Building Docker Image') {
+                steps {
+                    script {
+                        dockerImage = docker.build registry + ":$BUILD_NUMBER"
+                    }
                 }
             }
-        }
-    
-        stage('Remove Unused docker image') {
-          steps{
-            sh "docker rmi $registry:$BUILD_NUMBER"
-          }
+
+            stage('Deploying Docker Image to Dockerhub') {
+                steps {
+                    script {
+                        docker.withRegistry('', registryCredential) {
+                        dockerImage.push()
+                        }
+                    }
+                }
+            }
+
+            stage('Cleaning Up') {
+                steps{
+                  sh "docker rmi --force $registry:$BUILD_NUMBER"
+                }
+            }
         }
     }
-}
