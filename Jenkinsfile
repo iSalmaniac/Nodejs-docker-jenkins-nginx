@@ -7,11 +7,6 @@ pipeline {
 
     agent any
     stages {
-            stage('Cloning our Git') {
-                steps {
-                git 'git@github.com:iSalmaniac/Nodejs-docker-jenkins-nginx.git'
-                }
-            }
 
             stage('Building Docker Image') {
                 steps {
