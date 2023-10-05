@@ -4,12 +4,6 @@ pipeline {
         registry = "isalmaniac/nodejsapp"
         registryCredential = 'dockerhub'
     stages {
-        stage('Checkout') {
-            steps {
-                // Checkout the code from your source code repository (e.g., Git)
-                checkout scm
-            }
-        }
         
         stage('Build Docker Image') {
             steps {
@@ -27,7 +21,7 @@ pipeline {
                   docker.withRegistry( '', registryCredential ) {
                     docker.image.push("$BUILD_NUMBER")
                     docker.image.push('latest')
-                  
+                  }
                 }
             }
         }
@@ -46,4 +40,3 @@ pipeline {
         }
     }
 }
-
