@@ -1,5 +1,6 @@
 pipeline {
     agent any
+    
     environment {
         registry = "isalmaniac/nodejsapp"
         registryCredential = 'dockerhub'
@@ -31,13 +32,6 @@ pipeline {
           steps{
             sh "docker rmi $registry:$BUILD_NUMBER"
           }
-        }
-    
-    post {
-        success {
-            // Deploy the application to the Nginx server here
-            // You can use SSH or other deployment methods depending on your server setup
-            echo 'Successfully Deployed'
         }
     }
 }
